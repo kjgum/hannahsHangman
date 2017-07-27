@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Pinyon+Script' rel='stylesheet' type='text/css'>
+    <title>Hannah's Hangman</title>
+    <style type="text/css">
+    .jumbotron {
+        text-align: center;
+        font-family: 'Pinyon Script', cursive;
+        background: white;
+        max-width: 100%;
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+/*    
+    .themeButton {
+        background: red;
+    }
+    
+    .pauseButton {
+        background: blue;
+        color: white;
+    }*/
+    
+    body {
+        background-image: url('http://www.nmgncp.com/data/out/256/5876981-old-lady-wallpaper.jpg');
+    }
+    
+    .gameContent {
+        border-left: 1px solid black;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        ;
+    }
+    
+    .gameUpdate {
+        border: 1px solid black;
+    }
+    
+    .container {
+        background: white;
+    }
+    
+    h3 {
+        padding: 20px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 20px;
+    }
+    
+    #currentWord {
+        font-size: 80px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 gameContent">
+                <h3>Press any letter key to get started!</h3>
+                <h3>Wins: <span id="wincount">0</span></h3>
+                <h3>Losses: <span id="losscount">0</span></h3>
+            </div>
+            <div class="col-lg-6 gameUpdate">
+                <h3>Current Word: <span id="currentword"></span></h3>
+                <h3>Number of Guesses Remaining: <span id="guessesLeft"></span></h3>
+                <h3>Letters Already Guessed: <span id="lettersGuessed"></span></h3>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+    var wins = 0; //code at the end
+    var losses = 0; //code at the end
+    var wordsArray = ["ubiquitous", "askew", "mmmmmmmmmm", "bagpipes", "boxcar", "haiku", "kayak", "queue", "vodka", "underass", "overass", "flapjack", "espionage", "unicorn", "kazoo", "microwave", "topgolf", "mnemonic"
+    ];
+    var numGuesses;
+    var selectedWord;
+    var placeholder;
+    var userInput;
+    var lettersGuessed;
+    var correctGuess;
+
+    // var x = document.getElementById("playMusic"); 
+    // var y = document.getElementByID("pauseMusic");
+
+    // function playAudio() { 
+    //     x.play(); 
+    // } 
+
+    // function pauseAudio() { 
+    //     y.pause(); 
+    // }
+
+    function newGame() {
+
+        placeholder = [];
+        //randomly selects a word in the array
+        selectedWord = wordsArray[Math.floor(Math.random() * wordsArray.length)];
+        console.log(selectedWord);
+
+        //for loop turns word into blanks (-----)
+        for (var i = 0; i < selectedWord.length; i++) {
+            placeholder = placeholder + "-";
+        }
+
+        console.log(placeholder);
+        document.getElementById("currentword").innerHTML = placeholder;
+        document.getElementById("currentword").style.fontSize = "xx-large";
+        document.getElementById("currentword").style.padding = "20px";
+
+        numGuesses = 15;
+        document.getElementById("guessesLeft").innerHTML = numGuesses;
+
+        lettersGuessed = [];
+        document.getElementById("lettersGuessed").innerHTML = lettersGuessed;
+
+    }
+
+    function guessLetter() {
+
+        //letter key input
+        document.onkeyup = function(event) {
+            userInput = String.fromCharCode(event.keyCode).toLowerCase();
+            console.log(userInput);
+            correctGuess = false;
+
+            //checks if your letter is in the word
+            for (var i = 0; i < selectedWord.length; i++) {
+                if (userInput == selectedWord.substring(i, i + 1)) {
+
+                    placeholder = placeholder.substring(0, i) + userInput + placeholder.substring(i + 1, placeholder.length + 1);
+                    document.getElementById("currentword").innerHTML = placeholder;
+                    console.log(placeholder);
+                    correctGuess = true;
+                }
+            }
+            console.log(correctGuess);
+
+            if (correctGuess) {
+
+                for (i = 0; i < lettersGuessed.length; i++) {
+                    if (lettersGuessed[i] == selectedWord.substring(i, i + 1)) {
+                        console.log("You already tried " + lettersGuessed[i] + ". Try another letter");
+                    }
+                }
+            } else {
+                for (i = 0; i < lettersGuessed.length; i++) {
+                    if (lettersGuessed[i] == selectedWord.substring(i, i + 1)) {
+                        console.log("You already tried " + lettersGuessed[i] + ". Try another letter");
+                    }
+                }
+
+                lettersGuessed = lettersGuessed + userInput;
+                document.getElementById("lettersGuessed").innerHTML = lettersGuessed;
+
+                numGuesses--;
+                document.getElementById("guessesLeft").innerHTML = numGuesses;
+            }
+
+            //console.log("Current correct guess: " + correctGuess);
+
+            if (placeholder == selectedWord) {
+                alert("You Win!");
+                wins++;
+                document.getElementById("wincount").innerHTML = wins;
+                newGame();
+            }
+            if (numGuesses == 0) {
+                alert("Game Over. You Lose. Try Again.");
+                losses++;
+                document.getElementById("losscount").innerHTML = losses;
+                newGame();
+            }
+        }
+    }
+
+    newGame();
+    guessLetter();
+    </script>
+</body>
+
+</html>
